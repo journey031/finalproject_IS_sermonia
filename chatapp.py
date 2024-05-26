@@ -1,6 +1,6 @@
 import streamlit as st
 import openai
-import asyncio
+from streamlit.report_thread import async_to_sync
 
 from openai import AsyncOpenAI
 
@@ -41,16 +41,12 @@ def app():
 
     if st.session_state.step == 3:
         if 'itinerary' not in st.session_state:
-            async def fetch_itinerary():
-                itinerary = await generate_travel_recommendation(
-                    st.session_state.destination,
-                    st.session_state.duration,
-                    st.session_state.interests
-                )
-                st.session_state.itinerary = itinerary
-                st.experimental_rerun()
-
-            asyncio.run(fetch_itinerary())
+            itinerary = async_to_sync(generate_travel_recommendation)(
+                st.session_state.destination,
+                st.session_state.duration,
+                st.session_state.interests
+            )
+            st.session_state.itinerary = itinerary
         else:
             st.write(f"Recommended itinerary for your trip to {st.session_state.destination} for {st.session_state.duration} days, focusing on {st.session_state.interests}, is: {st.session_state.itinerary}")
             if st.button("Start Over"):
