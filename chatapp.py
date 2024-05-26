@@ -59,5 +59,5 @@ def app():
                         del st.session_state[key]
                 st.experimental_rerun()
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     app()
